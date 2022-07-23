@@ -49,4 +49,9 @@ The Songplays fact table was created to store partially denormalized data for an
 We wrote our ETL pipeline using Python. In doing so, we made extensive use of the **pyscopg2** library. This library allowed us to connect to our Postgres database, create a cursor to execute commands, and run all of our Python scripts from one place. To extract all the json files, perform the necessary transformations, and load the final data into our database, we created three Python scripts. Detailed explanations of the scripts and how they work can be found above in the section: **Execution of the Python Scripts**.
 
 **ER Diagram**
-![Sparkify ER Diagram](/images/sparkify_er.png)
+
+Below is the resulting star schema for the Sparkify database in PostgreSQL.
+
+<p align="center">
+<img  width="726" height= "804" src=/images/sparkify_er.png alt="Sparkify ER Diagram">
+</p>
