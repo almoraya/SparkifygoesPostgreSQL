@@ -53,8 +53,5 @@ We wrote our ETL pipeline using Python. In doing so, we made extensive use of th
 Below is the resulting star schema for the Sparkify database in PostgreSQL.
 
 <p align="center">
-<img  width="726" height= "804" src=/images/sparkify_er.png>
+<img  width="726" height= "804" src=/images/sparkify_er.png alt="Sparkify ER Diagram">
 </p>
-
-
-![Sparkify ER Diagram](/images/sparkify_er.png)
