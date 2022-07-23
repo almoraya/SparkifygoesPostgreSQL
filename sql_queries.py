@@ -8,18 +8,20 @@ time_table_drop = "drop table if exists time;"
 
 # CREATE TABLES
 
+# song_id and artist_id are exempt of the not null constraint as mentioned in the FAQs page.
+
 songplay_table_create = ("""
     create table if not exists songplays (
-        songplay_id varchar NOT NULL,
-        start_time bigint NOT NULL,
-        user_id int NOT NULL,
+        songplay_id serial,
+        start_time timestamp not null,
+        user_id int not null,
         level varchar,
-        song_id varchar NOT NULL,
-        artist_id varchar NOT NULL,
+        song_id varchar,
+        artist_id varchar,
         session_id int,
         location varchar,
         user_agent varchar,
-        primary key (songplay_id)        
+        primary key (songplay_id)
     );
 """)
 
@@ -30,17 +32,17 @@ user_table_create = ("""
         last_name varchar,
         gender char(1),
         level varchar,
-        primary key (user_id)            
+        primary key (user_id)
     );
 """)
 
 song_table_create = ("""
     create table if not exists songs (
         song_id varchar,
-        title varchar,
+        title varchar not null,
         artist_id varchar,
         year int,
-        duration float,
+        duration float not null,
         primary key (song_id)
     );
 """)
@@ -48,7 +50,7 @@ song_table_create = ("""
 artist_table_create = ("""
     create table if not exists artists (
         artist_id varchar,
-        name varchar,
+        name varchar not null,
         location varchar,
         latitude float,
         longitude float,
@@ -58,7 +60,7 @@ artist_table_create = ("""
 
 time_table_create = ("""
     create table if not exists time (
-        start_time bigint,
+        start_time timestamp,
         hour int,
         day int,
         week int,
@@ -73,38 +75,47 @@ time_table_create = ("""
 
 songplay_table_insert = ("""
     insert into songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent) 
-    values (%s, %s, %s, %s, %s, %s, %s, %s)
+    values (to_timestamp(%s /1000), %s, %s, %s, %s, %s, %s, %s)
+    on conflict do nothing;
 """)
 
 user_table_insert = ("""
     insert into users (user_id, first_name, last_name, gender, level) 
     values (%s, %s, %s, %s, %s)
+    on conflict do nothing;
 """)
 
 song_table_insert = ("""
     insert into songs (song_id, title, artist_id, year, duration) 
     values (%s, %s, %s, %s, %s)
+    on conflict do nothing;
 """)
 
 artist_table_insert = ("""
     insert into artists (artist_id, name, location, latitude, longitude) 
     values (%s, %s, %s, %s, %s)
+    on conflict do nothing;
 """)
 
 
 time_table_insert = ("""
     insert into time (start_time, hour, day, week, month, year, weekday) 
-    values (%s, %s, %s, %s, %s, %s, %s)
+    values (to_timestamp(%s /1000), %s, %s, %s, %s, %s, %s)
+    on conflict do nothing;
 """)
 
 # FIND SONGS
-
 song_select = ("""
-    select so.song_id, ar.artist_id 
-    from songs so
-    inner join artists ar on so.artist_id = ar.artist_id
-    where so.title = %s and ar.name = %s and so.duration = %s
+    select so.song_id, ar.artist_id from
+    songs so inner join
+    artists ar on so.artist_id = ar.artist_id
+    where title = %s
+        and name = %s
+        and duration = %s
 """)
+
+
+
 
 # QUERY LISTS
 

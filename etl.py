@@ -10,11 +10,8 @@ def process_song_file(cur, filepath):
     df = pd.read_json(filepath, lines=True)
 
     # insert song record
-    try:
-        song_data = df[['song_id', 'title', 'artist_id', 'year', 'duration']].values.tolist()[0]
-        cur.execute(song_table_insert, song_data)
-    except psycopg2.Error as err:
-        print('Issue inserting song record: ', err)
+    song_data = df[['song_id', 'title', 'artist_id', 'year', 'duration']].values.tolist()[0]
+    cur.execute(song_table_insert, song_data)
     
     # insert artist record
     artist_data = df[['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']].values.tolist()[0]
@@ -29,7 +26,7 @@ def process_log_file(cur, filepath):
     df = df[df['page'] == 'NextSong']
 
     # convert timestamp column to datetime
-    t = pd.to_datetime(df['ts'], unit='ms')
+    t = pd.to_datetime(df.ts, unit='ms')
     
     # insert time data records
     time_data = (df.ts, t.dt.hour, t.dt.day, t.dt.isocalendar().week, t.dt.month, t.dt.year, t.dt.weekday)
@@ -60,7 +57,7 @@ def process_log_file(cur, filepath):
 
         # insert songplay record
         songplay_data = (row.ts, row.userId, row.level, songid, artistid, 
-                        row.sessionId, row.location, row.userAgent)
+                     row.sessionId, row.location, row.userAgent)
         cur.execute(songplay_table_insert, songplay_data)
 
 
@@ -84,7 +81,7 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
-    conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=postgres password=Cellent2018")
+    conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=postgres password=admin")
     cur = conn.cursor()
 
     process_data(cur, conn, filepath='data/song_data', func=process_song_file)
