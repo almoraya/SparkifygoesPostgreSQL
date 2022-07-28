@@ -68,6 +68,6 @@ Below is the resulting star schema for the Sparkify database in PostgreSQL.
 `limit 10;`<br>
 
 <p align="center">
-<img  width="775" height= "559" src=/images/result_query1.jpg alt="Result to query 1">
+<img  width="50%" height= "50%" src=/images/result_query1.jpg alt="Result to query 1">
 </p>
 
