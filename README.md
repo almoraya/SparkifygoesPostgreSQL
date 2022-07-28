@@ -58,6 +58,9 @@ Below is the resulting star schema for the Sparkify database in PostgreSQL.
 
 ## Querying the Data
 
+## Querying the Data
+
+This query shows us the total amount of songs listened by an user, not distinct.
 ```
 select concat(first_name, last_name) as full_name, count(sg.song_id) as totalsongslistened
 from songplays sp
@@ -71,6 +74,7 @@ limit 10;
 <img  width="50%" height= "50%" src=/images/result_query1.png alt="Result to query 1">
 </p>
 
+This query tells us information about our users distribution with respect of level (subscription type)
 ```
 select level as subscription_type, count(user_id) total_subscriptions_by_type
 from users
@@ -82,6 +86,7 @@ limit 10;
 <img  width="50%" height= "50%" src=/images/result_query2.png alt="Result to query 2">
 </p>
 
+This last query gives us an insight how the most listened artists.
 ```
 select name as artist_name, count(sg.song_id) as total_songs_listened
 from songplays sp
@@ -94,5 +99,3 @@ limit 10;
 <p align="center">
 <img  width="50%" height= "50%" src=/images/result_query3.png alt="Result to query 3">
 </p>
-
-test
