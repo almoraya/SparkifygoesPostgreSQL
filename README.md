@@ -55,3 +55,15 @@ Below is the resulting star schema for the Sparkify database in PostgreSQL.
 <p align="center">
 <img  width="726" height= "804" src=/images/sparkify_er.png alt="Sparkify ER Diagram">
 </p>
+
+`
+select concat(first_name, last_name) as full_name, count(sg.song_id) as totalsongslistened
+from songplays sp
+join users us on (sp.user_id = us.user_id)
+join songs sg on (sp.song_id = sg.song_id)
+group by first_name, last_name
+order by totalsongslistened desc
+limit 10;
+`
+
+
