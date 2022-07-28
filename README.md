@@ -58,7 +58,6 @@ Below is the resulting star schema for the Sparkify database in PostgreSQL.
 
 ## Querying the Data
 
-
 ```
 select concat(first_name, last_name) as full_name, count(sg.song_id) as totalsongslistened
 from songplays sp
@@ -68,8 +67,30 @@ group by first_name, last_name
 order by totalsongslistened desc
 limit 10;
 ```
-
 <p align="center">
 <img  width="50%" height= "50%" src=/images/result_query1.png alt="Result to query 1">
 </p>
 
+```
+select level as subscription_type, count(user_id) total_subscriptions_by_type
+from users
+group by level
+order by total_subscriptions_by_type
+limit 10;
+```
+<p align="center">
+<img  width="50%" height= "50%" src=/images/result_query2.png alt="Result to query 2">
+</p>
+
+```
+select name as artist_name, count(sg.song_id) as total_songs_listened
+from songplays sp
+join songs sg on (sp.song_id = sg.song_id)
+join artists ar on (sp.artist_id = ar.artist_id)
+group by name
+order by total_songs_listened desc
+limit 10;
+```
+<p align="center">
+<img  width="50%" height= "50%" src=/images/result_query3.png alt="Result to query 3">
+</p>
