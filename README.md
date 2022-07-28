@@ -59,13 +59,15 @@ Below is the resulting star schema for the Sparkify database in PostgreSQL.
 ## Querying the Data
 
 
-`select concat(first_name, last_name) as full_name, count(sg.song_id) as totalsongslistened`<br>
-`from songplays sp`<br>
-`join users us on (sp.user_id = us.user_id)`<br>
-`join songs sg on (sp.song_id = sg.song_id)`<br>
-`group by first_name, last_name`<br>
-`order by totalsongslistened desc`<br>
-`limit 10;`<br>
+```
+select concat(first_name, last_name) as full_name, count(sg.song_id) as totalsongslistened
+from songplays sp
+join users us on (sp.user_id = us.user_id)
+join songs sg on (sp.song_id = sg.song_id)
+group by first_name, last_name
+order by totalsongslistened desc
+limit 10;
+```
 
 <p align="center">
 <img  width="50%" height= "50%" src=/images/result_query1.png alt="Result to query 1">
