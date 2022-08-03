@@ -1,4 +1,4 @@
-# **Project 01: Data Modeling with Postgres**
+# **Sparkify smalll PostgreSQL Database**
 
 ## **Project Summary**
 
