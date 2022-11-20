@@ -12,7 +12,6 @@ To do so, ***you will refactor this application into a microservice architecture
 <br>
 <br>
 <br>
-<br>
 ### Table of Contents
 
 - [Technologies](#technologies)
@@ -24,7 +23,7 @@ To do so, ***you will refactor this application into a microservice architecture
 - [Steps](#steps)
 - [Verifying it Works](#verifying)
 - [Deployment Note](#deploynote)
-- [NewServices](#newservices)
+- [New Services](#newservices)
 - [Docker Images](#docker)
 - [Configs and Secrets](#config)
 - [PostgreSQL Database](#postgres)
@@ -33,7 +32,6 @@ To do so, ***you will refactor this application into a microservice architecture
 <br>
 <br>
 <br>
-
 
 <a name="technologies"/>
 
@@ -91,6 +89,9 @@ The command will take a while and will leverage VirtualBox to load an [openSUSE]
 
 #### Set up `kubectl`
 After `vagrant up` is done, you will SSH into the Vagrant environment and retrieve the Kubernetes config file used by `kubectl`. We want to copy the contents of this file into our local environment so that `kubectl` knows how to communicate with the K3s cluster.
+<br>
+For ease of use, I aliased `kubectl` as k. This makes typing much faster.
+
 ```bash
 $ vagrant ssh
 ```
@@ -146,11 +147,13 @@ It is important to follow a specific order when deploying an app to kubernetes. 
 
 8. `k apply -f deployment/uda-app-frontend.yaml` - Set up the service and deployment of the frontend (web app)
 
-9. `k apply -f deployment/uda-app-frontend.yaml` - Set up the service and deployment for the web app
+9. `k apply -f deployment/kafka-configmap.yaml` - Set up kafka environment variables for the pods
 10. `helm install udaconnect bitnami/kafka` - Set up the bitnami/kafka helm chart ("package")
 
 9. `k apply -f deployment/uda-gk-location-producer.yaml` - Set up the location producer service
 10. `k apply -f deployment/uda-k-location-consumer.yaml` - Set up the location consumer service
+<br>
+<br>
 
 Manually applying each of the individual `yaml` files is cumbersome but going through each step provides some context on the content of the starter project. In practice, we would have reduced the number of steps by running the command against a directory to apply of the contents: `kubectl apply -f deployment/`.
 
@@ -165,11 +168,15 @@ Note: The first time you run this project, you will need to seed the database wi
 Once the project is up and running, all pods and services should be ready and running. <br>
 The commands 
 - `kubectl get pods` and 
-- `kubectl get services` helps us achieved that.
+- `kubectl get services` helps us to show that.
+<br>
+<br>
 
 <p align="center">
 <img  width="60%" height= "35%" src=docs/pods_screenshot.png alt="Running Pods">
 </p>
+
+<br>
 
 <p align="center">
 <img  width="90%" height= "50%" src=docs/services_screenshot.png alt="Running services">
@@ -190,7 +197,7 @@ These pages should also load on your web browser:
 <a name="deploynote">
 
 ### Deployment Note
-You may notice the odd port numbers being served to `localhost`. [By default, Kubernetes services are only exposed to one another in an internal network](https://kubernetes.io/docs/concepts/services-networking/service/). This means that `udaconnect-app` and `udaconnect-api` can talk to one another. For us to connect to the cluster as an "outsider", we need to a way to expose these services to `localhost`.
+You may notice the odd port numbers being served to `localhost`. [By default, Kubernetes services are only exposed to one another in an internal network](https://kubernetes.io/docs/concepts/services-networking/service/). This means that `uda-app-frontend` can talk to `uda-api-person-connection` and `uda-api-persons`. For us to connect to the cluster as an "outsider", we need to a way to expose these services to `localhost`.
 
 Connections to the Kubernetes services have been set up through a [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport). (While we would use a technology like an [Ingress Controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) to expose our Kubernetes services in deployment, a NodePort will suffice for development.)
 <br>
@@ -215,6 +222,8 @@ As a reminder, each module should have:
 ### Docker Images
 `udaconnect-app` and `udaconnect-api` use docker images from `udacity/nd064-udaconnect-app` and `udacity/nd064-udaconnect-api`. To make changes to the application, build your own Docker image and push it to your own DockerHub repository. Replace the existing container registry path with your own.
 <br>
+As a result of refactoring the application, 6 new images were created.
+
 <br>
 
 <a name="config">
@@ -229,6 +238,8 @@ echo "d293aW1zb3NlY3VyZQ==" | base64 -d
 echo "hotdogsfordinner" | base64
 ```
 This is okay for development against an exclusively local environment and we want to keep the setup simple so that you can focus on the project tasks. However, in practice we should not commit our code with secret values into our repository. A CI/CD pipeline can help prevent that.
+
+In `deployment/kafka-configmap.yaml` we initiated the kafka server with a topic name and the address of its server.
 <br>
 <br>
 
